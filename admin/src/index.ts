@@ -6,24 +6,21 @@ import { prefixKey } from './utils/prefixKey';
 export default {
   register(app: any) {
     //
-    // Register custom field in the admin panel.
-    //
-    // - See also: https://docs.strapi.io/cms/features/custom-fields#registering-a-custom-field-in-the-admin-panel
+    // Register custom field in the admin panel - 100% compatible with strapi-plugin-multi-select
     //
     app.customFields.register({
       name: 'multiselect-checkbox',
       pluginId: `${PLUGIN_ID}`,
       type: 'json',
+      icon: PluginIcon,
       intlLabel: {
         id: `${PLUGIN_ID}.label`,
-        defaultMessage: 'Multiselect',
+        defaultMessage: 'Multiselect Checkbox',
       },
       intlDescription: {
         id: `${PLUGIN_ID}.description`,
-        defaultMessage:
-          'A custom field for Strapi that allows users to select multiple options from a predefined list.',
+        defaultMessage: 'Select multiple options using checkboxes. Data stored as JSON array.',
       },
-      icon: PluginIcon,
       components: {
         Input: async () => import('./components/Multiselect'),
       },
@@ -33,20 +30,34 @@ export default {
             sectionTitle: null,
             items: [
               {
-                name: 'options.availableOptions',
+                name: 'options',
                 type: 'textarea-enum',
                 intlLabel: {
                   id: prefixKey('options.available-options.label'),
-                  defaultMessage: 'Available Options',
+                  defaultMessage: 'Options (one per line)',
                 },
                 description: {
                   id: prefixKey('options.available-options.description'),
-                  defaultMessage: 'One option per line.',
+                  defaultMessage: 'Enter one option per line.',
                 },
                 placeholder: {
                   id: prefixKey('options.available-options.placeholder'),
                   defaultMessage: 'Option 1\nOption 2\nOption 3',
                 },
+              },
+              {
+                name: 'default',
+                type: 'json',
+                intlLabel: {
+                  id: prefixKey('options.default.label'),
+                  defaultMessage: 'Default value',
+                },
+                description: {
+                  id: prefixKey('options.default.description'),
+                  defaultMessage:
+                    'Set the default value in JSON format, ex: ["Option 1", "Option 2"]',
+                },
+                defaultValue: '[]',
               },
             ],
           },
@@ -54,8 +65,6 @@ export default {
 
         //
         // Strapi default advanced options.
-        //
-        // - See also: https://github.com/strapi/strapi/blob/develop/packages/core/content-type-builder/admin/src/components/FormModal/attributes/attributeOptions.ts
         //
         advanced: [
           {

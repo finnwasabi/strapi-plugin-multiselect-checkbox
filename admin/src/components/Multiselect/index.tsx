@@ -1,4 +1,7 @@
 import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
+//
+// Types
+//
 import type { FieldValue, InputProps } from '@strapi/strapi/admin';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
@@ -9,9 +12,7 @@ import { prefixKey } from '../../utils/prefixKey';
 type Props = InputProps &
   FieldValue & {
     attribute: {
-      options: {
-        availableOptions: string[] | undefined;
-      };
+      options: string[] | undefined;
     };
   };
 
@@ -23,9 +24,7 @@ const config = {
   /**
    * The default options used as fallbacks in case the user-defined values are missing.
    */
-  defaultOptions: {
-    availableOptions: [],
-  },
+  defaultOptions: [],
 };
 
 //
@@ -69,7 +68,7 @@ const EmptyState = () => {
  */
 const Multiselect = (props: Props) => {
   const { attribute, disabled, hint, label, name, onChange, required, type, value } = props;
-  const { availableOptions = config.defaultOptions.availableOptions } = attribute.options;
+  const availableOptions = attribute?.options || config.defaultOptions;
 
   // Ensure value is always an array
   const selectedOptions = Array.isArray(value) ? value : [];
@@ -111,7 +110,6 @@ const Multiselect = (props: Props) => {
             {availableOptions.map((option) => (
               <Checkbox
                 key={option}
-                option={option}
                 checked={selectedOptions.includes(option)}
                 disabled={disabled ?? false}
                 onCheckedChange={(isSelected: boolean) => updateSelectedOptions(option, isSelected)}

@@ -1,7 +1,21 @@
-// Icon by SVG Repo via CC0 license:
-// https://www.svgrepo.com/svg/213538/check-mark-notepad
-import checkmarkNotepad from './checkmark-notepad.svg';
+import { Flex } from '@strapi/design-system';
+import { Check } from '@strapi/icons';
+import React from 'react';
+import styled from 'styled-components';
 
-const PluginIcon = () => <img src={checkmarkNotepad} />;
+const IconBox = styled(Flex)`
+  background-color: #f0f0ff; /* primary100 */
+  border: 1px solid #d9d8ff; /* primary200 */
 
-export { PluginIcon };
+  svg > path {
+    fill: #4945ff; /* primary600 */
+  }
+`;
+
+export const PluginIcon: React.FC = () => {
+  return (
+    <IconBox justifyContent="center" alignItems="center" width={7} height={6} hasRadius aria-hidden>
+      <Check />
+    </IconBox>
+  );
+};
