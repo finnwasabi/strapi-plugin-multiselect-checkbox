@@ -1,0 +1,40 @@
+# Source files
+admin/
+server/
+assets/
+
+# Config files
+.editorconfig
+.eslintignore
+.prettierignore
+.prettierrc
+tsconfig.json
+
+# Development files
+*.log
+*.md
+!README.md
+MODIFICATIONS.md
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts (keep dist/)
+*.tsbuildinfo
