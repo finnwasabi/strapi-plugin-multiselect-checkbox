@@ -1,128 +1,157 @@
 import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
-//
-// Types
-//
-import type { FieldValue, InputProps } from '@strapi/strapi/admin';
-import { FormattedMessage } from 'react-intl';
+import { useField } from '@strapi/strapi/admin';
+import React, { useMemo } from 'react';
+import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { prefixKey } from '../../utils/prefixKey';
-
-/** The properties for our `Multiselect` component below. */
-type Props = InputProps &
-  FieldValue & {
-    attribute: {
-      options: string[] | undefined;
-    };
-  };
-
-//
-// Config
-//
-
-const config = {
-  /**
-   * The default options used as fallbacks in case the user-defined values are missing.
-   */
-  defaultOptions: [],
-};
-
-//
-// Components
-//
-
-/**
- * A styled <p> element that automatically uppercases
- * the first letter of its content using CSS.
- */
 const CapitalizedText = styled.p`
   &::first-letter {
     text-transform: uppercase;
   }
 `;
 
-/**
- * The component that is shown in case no available options are set.
- */
-const EmptyState = () => {
-  return (
-    <Typography variant="pi" textColor="neutral400">
-      <FormattedMessage id={prefixKey('empty-state.text')} />
-    </Typography>
-  );
-};
+const MultiSelect = ({
+  hint,
+  label,
+  name,
+  intlLabel,
+  required,
+  attribute,
+  description,
+  placeholder,
+  disabled,
+}: {
+  hint: string;
+  label: string;
+  name: string;
+  intlLabel: any;
+  required: boolean;
+  attribute: any;
+  description: any;
+  placeholder: string;
+  disabled: boolean;
+}) => {
+  const { formatMessage } = useIntl();
+  const { onChange, value, error } = useField(name);
 
-/**
- * `Multiselect` is a custom form component that allows users to select multiple options
- * via checkboxes. The selected values are stored as an array of strings.
- *
- * ### Props:
- * - `attribute`: An object containing the list of selectable `options: string[]`.
- * - `disabled`: (Optional) Disables all checkboxes when `true`.
- * - `hint`: (Optional) A string providing contextual help, shown below the field.
- * - `name`: The name of the form field (used in the synthetic `onChange` event).
- * - `label`: A label for the field, displayed above the checkboxes.
- * - `onChange`: A handler that receives the updated selection as an array of strings.
- * - `required`: (Optional) Indicates if the field is required.
- * - `value`: The current value as an array of selected options.
- */
-const Multiselect = (props: Props) => {
-  const { attribute, disabled, hint, label, name, onChange, required, type, value } = props;
-  const availableOptions = attribute?.options || config.defaultOptions;
+  const possibleOptions = useMemo(() => {
+    return (attribute['options'] || [])
+      .map((option: string) => {
+        const [label, value] = [...option.split(/:(.*)/s), option];
+        if (!label || !value) return null;
+        return { label, value };
+      })
+      .filter(Boolean);
+  }, [attribute]);
 
-  // Ensure value is always an array
-  const selectedOptions = Array.isArray(value) ? value : [];
+  const sanitizedValue = useMemo(() => {
+    let parsedValue;
+    try {
+      parsedValue = typeof value !== 'string' ? value || [] : JSON.parse(value || '[]');
+    } catch (e) {
+      parsedValue = [];
+    }
+    return Array.isArray(parsedValue)
+      ? parsedValue
+          .map((val) =>
+            possibleOptions.find((option: { label: string; value: string }) => option.value === val)
+          )
+          .filter((option) => !!option)
+      : [];
+  }, [value, possibleOptions]);
 
-  /**
-   * Triggers the `onChange` handler with the given `value`.
-   */
-  const updateValue = (value: string[]) => onChange({ target: { name, value, type } } as any);
+  const fieldError = useMemo(() => {
+    if (error) return error;
 
-  /**
-   * Updates the `selectedOptions` list by adding or removing the given `option`.
-   *
-   * @param option - The option to add or remove from the selection.
-   * @param isSelected - If `true`, the option is added; if `false`, it is removed.
-   */
-  const updateSelectedOptions = (option: string, isSelected: boolean) => {
-    const nextSelectedOptions = isSelected
-      ? selectedOptions.concat(option)
-      : selectedOptions.filter((selectedOption: string) => selectedOption !== option);
+    const { min, max } = attribute;
+    const hasNoOptions = required && !possibleOptions.length;
+    const belowMin = sanitizedValue.length < min && (required || sanitizedValue.length > 0);
+    const aboveMax = sanitizedValue.length > max;
 
-    // Ensure the selected options follow the order of the available options.
-    const sortedNextSelectedOptions = nextSelectedOptions.sort(
-      (lhs: string, rhs: string) => availableOptions.indexOf(lhs) - availableOptions.indexOf(rhs)
-    );
+    if (hasNoOptions) {
+      return 'No options, but field is required';
+    }
 
-    updateValue(sortedNextSelectedOptions);
+    if (belowMin) {
+      return `Select at least ${min} options`;
+    }
+
+    if (aboveMax) {
+      return `Select at most ${max} options`;
+    }
+
+    return null;
+  }, [required, error, possibleOptions, sanitizedValue, attribute]);
+
+  const handleCheckboxChange = (optionValue: string, isChecked: boolean) => {
+    let newValues: string[];
+
+    if (isChecked) {
+      // Add value
+      newValues = [...sanitizedValue.map((v: any) => v.value), optionValue];
+    } else {
+      // Remove value
+      newValues = sanitizedValue.map((v: any) => v.value).filter((v: string) => v !== optionValue);
+    }
+
+    onChange({
+      target: {
+        name: name,
+        value: newValues.length ? JSON.stringify(newValues) : null,
+        type: attribute.type,
+      },
+    } as React.ChangeEvent<HTMLInputElement>);
   };
 
-  // Renders our container with the corresponding checkboxes for each available option.
   return (
-    <Field.Root hint={hint} name={name} required={required}>
-      <Field.Label>{label}</Field.Label>
+    <Field.Root
+      hint={description?.id ? formatMessage(description) : hint}
+      error={fieldError as string}
+      name={name}
+      required={required}
+    >
+      <Flex direction="column" alignItems="stretch" gap={1}>
+        <Field.Label>{intlLabel?.id ? formatMessage(intlLabel) : label}</Field.Label>
 
-      {availableOptions.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <Box padding={2}>
-          <Flex gap={2} direction="column" alignItems="leading">
-            {availableOptions.map((option) => (
-              <Checkbox
-                key={option}
-                checked={selectedOptions.includes(option)}
-                disabled={disabled ?? false}
-                onCheckedChange={(isSelected: boolean) => updateSelectedOptions(option, isSelected)}
-              >
-                <CapitalizedText>{option}</CapitalizedText>
-              </Checkbox>
-            ))}
-          </Flex>
-        </Box>
-      )}
-      <Field.Hint />
+        {possibleOptions.length === 0 ? (
+          <Typography variant="pi" textColor="neutral400">
+            No options available. Please configure options in the field settings.
+          </Typography>
+        ) : (
+          <Box padding={2}>
+            <Flex gap={2} direction="column" alignItems="stretch">
+              {possibleOptions.map((option: { label: string; value: string }) => {
+                const isChecked = sanitizedValue.some((v: any) => v.value === option.value);
+                const isDisabled =
+                  disabled || (sanitizedValue.length >= attribute['max'] && !isChecked);
+
+                return (
+                  <Checkbox
+                    key={option.value}
+                    checked={isChecked}
+                    disabled={isDisabled}
+                    onCheckedChange={(checked: boolean) =>
+                      handleCheckboxChange(option.value, checked)
+                    }
+                  >
+                    <CapitalizedText>
+                      {formatMessage({
+                        id: option.label,
+                        defaultMessage: option.label,
+                      })}
+                    </CapitalizedText>
+                  </Checkbox>
+                );
+              })}
+            </Flex>
+          </Box>
+        )}
+
+        <Field.Hint />
+        <Field.Error />
+      </Flex>
     </Field.Root>
   );
 };
 
-export default Multiselect;
+export default MultiSelect;

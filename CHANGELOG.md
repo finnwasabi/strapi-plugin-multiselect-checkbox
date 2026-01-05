@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2026-01-05
+
+### Fixed
+
+- Fixed data format to be 100% compatible with `strapi-plugin-multi-select`
+- Changed storage from nested object format to direct JSON array format
+- Now stores as `["Option 1", "Option 2"]` instead of `{"values": ["Option 1", "Option 2"]}`
+- Added support for default values in schema (e.g., `"default": "[]"` or `"default": "[\"Day 1\"]"`)
+- Fixed icon to match original multi-select plugin style
+
+### Changed
+
+- Updated component logic to match `strapi-plugin-multi-select` exactly
+- Only UI difference: checkboxes instead of dropdown
+- Maintains same data structure for seamless migration
+
+## [1.0.1] - 2026-01-05
+
+### Fixed
+
+- Minor bug fixes and improvements
+
 ## [1.0.0] - 2026-01-05
 
 ### Added
