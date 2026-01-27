@@ -1,4 +1,4 @@
-import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
+import { Box, Checkbox, Field, Flex, Grid, GridItem, Typography } from '@strapi/design-system';
 import { useField } from '@strapi/strapi/admin';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -119,31 +119,32 @@ const MultiSelect = ({
           </Typography>
         ) : (
           <Box padding={2}>
-            <Flex gap={2} direction="column" alignItems="stretch">
+            <Grid gap={2} gridCols={2}>
               {possibleOptions.map((option: { label: string; value: string }) => {
                 const isChecked = sanitizedValue.some((v: any) => v.value === option.value);
                 const isDisabled =
                   disabled || (sanitizedValue.length >= attribute['max'] && !isChecked);
 
                 return (
-                  <Checkbox
-                    key={option.value}
-                    checked={isChecked}
-                    disabled={isDisabled}
-                    onCheckedChange={(checked: boolean) =>
-                      handleCheckboxChange(option.value, checked)
-                    }
-                  >
-                    <CapitalizedText>
-                      {formatMessage({
-                        id: option.label,
-                        defaultMessage: option.label,
-                      })}
-                    </CapitalizedText>
-                  </Checkbox>
+                  <GridItem key={option.value} col={1}>
+                    <Checkbox
+                      checked={isChecked}
+                      disabled={isDisabled}
+                      onCheckedChange={(checked: boolean) =>
+                        handleCheckboxChange(option.value, checked)
+                      }
+                    >
+                      <CapitalizedText>
+                        {formatMessage({
+                          id: option.label,
+                          defaultMessage: option.label,
+                        })}
+                      </CapitalizedText>
+                    </Checkbox>
+                  </GridItem>
                 );
               })}
-            </Flex>
+            </Grid>
           </Box>
         )}
 
