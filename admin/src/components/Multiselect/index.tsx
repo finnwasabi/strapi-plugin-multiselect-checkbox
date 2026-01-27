@@ -1,4 +1,4 @@
-import { Box, Checkbox, Field, Flex, Grid, GridItem, Typography } from '@strapi/design-system';
+import { Box, Checkbox, Field, Flex, Typography } from '@strapi/design-system';
 import { useField } from '@strapi/strapi/admin';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -8,6 +8,12 @@ const CapitalizedText = styled.p`
   &::first-letter {
     text-transform: uppercase;
   }
+`;
+
+const OptionsGrid = styled(Box)`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: ${({ theme }) => theme.spaces[2]};
 `;
 
 const MultiSelect = ({
@@ -119,32 +125,31 @@ const MultiSelect = ({
           </Typography>
         ) : (
           <Box padding={2}>
-            <Grid gap={2} gridCols={2}>
+            <OptionsGrid>
               {possibleOptions.map((option: { label: string; value: string }) => {
                 const isChecked = sanitizedValue.some((v: any) => v.value === option.value);
                 const isDisabled =
                   disabled || (sanitizedValue.length >= attribute['max'] && !isChecked);
 
                 return (
-                  <GridItem key={option.value} col={1}>
-                    <Checkbox
-                      checked={isChecked}
-                      disabled={isDisabled}
-                      onCheckedChange={(checked: boolean) =>
-                        handleCheckboxChange(option.value, checked)
-                      }
-                    >
-                      <CapitalizedText>
-                        {formatMessage({
-                          id: option.label,
-                          defaultMessage: option.label,
-                        })}
-                      </CapitalizedText>
-                    </Checkbox>
-                  </GridItem>
+                  <Checkbox
+                    key={option.value}
+                    checked={isChecked}
+                    disabled={isDisabled}
+                    onCheckedChange={(checked: boolean) =>
+                      handleCheckboxChange(option.value, checked)
+                    }
+                  >
+                    <CapitalizedText>
+                      {formatMessage({
+                        id: option.label,
+                        defaultMessage: option.label,
+                      })}
+                    </CapitalizedText>
+                  </Checkbox>
                 );
               })}
-            </Grid>
+            </OptionsGrid>
           </Box>
         )}
 
