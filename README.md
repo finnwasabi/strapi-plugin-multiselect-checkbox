@@ -162,4 +162,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 **Tung Le**
 
 - GitHub: [@finnwasabi](https://github.com/finnwasabi)
-- Email: tunghtml@gmail.com
+- Email: nhattung1511@gmail.com
+
+---
+
+Built by **Tung Le**. More Strapi plugins and case studies at [tungln.is-a.dev](https://tungln.is-a.dev).

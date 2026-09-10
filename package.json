@@ -1,6 +1,6 @@
 {
   "name": "@tunghtml/strapi-plugin-multiselect-checkbox",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A Strapi v5 custom field plugin with checkbox UI that stores selected values as an array of strings (JSON type) instead of comma-separated strings.",
   "keywords": [
     "strapi",
@@ -15,8 +15,8 @@
   "license": "MIT",
   "author": {
     "name": "Tung Le",
-    "email": "tunghtml@gmail.com",
-    "url": "https://github.com/finnwasabi"
+    "email": "nhattung1511@gmail.com",
+    "url": "https://tungln.is-a.dev"
   },
   "repository": {
     "type": "git",
