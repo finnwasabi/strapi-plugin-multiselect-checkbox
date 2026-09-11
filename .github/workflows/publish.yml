@@ -41,8 +41,9 @@ jobs:
             echo "publish=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # npm install chu khong phai npm ci: repo nay khong co package-lock.json
       - if: steps.check.outputs.publish == 'true'
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       # Goi nay khai files: ["dist"], ma dist nam trong .gitignore.
       # Publish ma khong build la day len mot goi rong ruot.
