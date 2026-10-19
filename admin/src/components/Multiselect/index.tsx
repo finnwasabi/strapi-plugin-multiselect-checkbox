@@ -54,7 +54,8 @@ const MultiSelect = ({
     let parsedValue;
     try {
       parsedValue = typeof value !== 'string' ? value || [] : JSON.parse(value || '[]');
-    } catch (e) {
+    } catch {
+      // Unreadable stored value: show nothing selected
       parsedValue = [];
     }
     return Array.isArray(parsedValue)

@@ -107,5 +107,5 @@ Based on [strapi-plugin-multiselect-field](https://github.com/fxm90/strapi-plugi
 ## 📧 Contact
 
 - Author: Tung Le
-- Email: tunghtml@gmail.com
+- Email: nhattung1511@gmail.com
 - GitHub: @finnwasabi

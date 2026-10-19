@@ -137,4 +137,4 @@ Follow [Semantic Versioning](https://semver.org/):
 For issues or questions:
 
 - GitHub Issues: https://github.com/finnwasabi/strapi-plugin-multiselect-checkbox/issues
-- Email: tunghtml@gmail.com
+- Email: nhattung1511@gmail.com

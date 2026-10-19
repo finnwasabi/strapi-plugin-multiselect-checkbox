@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.5] - 2026-10-19
+
+### Changed
+
+- Unreadable stored values are handled without an unused exception variable
+- Support contact updated to nhattung1511@gmail.com
+
 ## [1.0.2] - 2026-01-05
 
 ### Fixed
