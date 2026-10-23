@@ -1,5 +1,10 @@
 # @tunghtml/strapi-plugin-multiselect-checkbox
 
+> [!IMPORTANT]
+> **This plugin has moved to [Strapi Field Kit](https://github.com/finnwasabi/strapi-field-kit/tree/main/packages/multiselect-checkbox).**
+> Version 2.0 and later are developed there; please open issues and pull requests in that repository.
+> The npm package name is unchanged, and 1.x releases stay installable. See the [upgrade notes](https://github.com/finnwasabi/strapi-field-kit/tree/main/packages/multiselect-checkbox#upgrading-from-1x).
+
 A Strapi v5 custom field plugin with checkbox UI that stores selected values as an **array of strings** (JSON type) instead of comma-separated strings.
 
 ![Strapi Version](https://img.shields.io/badge/strapi-v5-blue)
